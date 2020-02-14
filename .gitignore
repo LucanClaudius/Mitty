@@ -3,6 +3,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+/osu/
+/osuDeltaT/
+/Mitty/config.json
+/Mitty/ffmpeg.exe
+/Mitty/opus.dll
+/Mitty/sodium.dll
+
 # User-specific files
 *.rsuser
 *.suo
