@@ -65,7 +65,7 @@ namespace Mitty.Commands
                 {
                     Page = page;
                 }
-                else if (messageList[i].StartsWith("="))
+                else if (messageList[i].StartsWith("-"))
                 {
                     char[] commandModifiers = messageList[i].Remove(0, 1).ToCharArray();
                     CommandModifiers = commandModifiers;
