@@ -9,6 +9,8 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.VoiceNext;
+using System.Linq;
+using DSharpPlus.Entities;
 
 namespace Mitty
 {
@@ -40,12 +42,15 @@ namespace Mitty
 
             Client = new DiscordClient(config);
             Client.Ready += OnClientReady;
+            Client.MessageDeleted += MessageLogger;
+            Client.MessageUpdated += MessageLogger;
 
             Client.UseInteractivity(new InteractivityConfiguration { });
 
             var commandsConfig = new CommandsNextConfiguration
             {
                 StringPrefixes = new string[] { configJson["Prefix"] },
+                CaseSensitive = false,
                 EnableDms = false,
                 EnableMentionPrefix = true,
                 EnableDefaultHelp = false,
@@ -70,6 +75,7 @@ namespace Mitty
 
         private Task OnClientReady(ReadyEventArgs e)
         {
+            System.Console.WriteLine("yuh");
             return Task.CompletedTask;
         }
 
@@ -77,6 +83,53 @@ namespace Mitty
         {
             e.Context.Channel.SendMessageAsync(e.Exception.Message);
             return Task.CompletedTask;
+        }
+
+        private Task MessageLogger(MessageDeleteEventArgs e)
+        {
+            var chn = e.Guild.Channels[e.Guild.Channels.FirstOrDefault(x => x.Value.Name == "message-log").Key];
+
+            if (chn != null)
+            {
+                var embed = CreateLogEmbed(e.Message).Result;
+                embed.WithDescription($"🗑 **Message deleted in {e.Message.Channel.Mention}**");
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task MessageLogger(MessageUpdateEventArgs e)
+        {
+            var chn = e.Guild.Channels[e.Guild.Channels.FirstOrDefault(x => x.Value.Name == "message-log").Key];
+
+            if (chn != null)
+            {
+                var embed = CreateLogEmbed(e.Message).Result;
+                embed.WithDescription($"🗑 **Message edited in {e.Message.Channel.Mention}**");
+                embed.AddField("New message:", $"{e.Message.JumpLink}");
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task<DiscordEmbedBuilder> CreateLogEmbed(DiscordMessage message)
+        {
+            var embed = new DiscordEmbedBuilder();
+
+            if (message.Content.Length > 0)
+                embed.AddField("Old content:", message.Content);
+
+            if (message.Attachments.Count > 0)
+            {
+                foreach (DiscordAttachment attachment in message.Attachments)
+                {
+                    embed.AddField("OAttachment:", attachment.ProxyUrl);
+                }
+            }
+
+            embed.WithFooter($"Original message sent at {message.CreationTimestamp}, edited at {message.EditedTimestamp}");
+
+            return Task.FromResult(embed);
         }
     }
 }

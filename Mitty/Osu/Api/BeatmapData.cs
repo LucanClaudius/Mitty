@@ -3,7 +3,7 @@ using System;
 
 namespace Mitty.Osu.Api
 {
-    struct BeatmapData
+    public struct BeatmapData
     {
         [JsonProperty("approved")]
         public int Approved { get; private set; }

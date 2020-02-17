@@ -83,13 +83,8 @@ namespace Mitty.Osu
             string emoji = GetRankEmoji(score);
             string mods = OsuHelper.ParseMods(score.EnabledMods);
 
-            ppData pp;
+            ppData pp = new PerformanceCalculator(score, beatmap, input.Gamemode).Calculate();
             string achievedPp;
-
-            //if (input.IsDeltaT && input.Gamemode == 0)
-            //    pp = new Calculators.DeltaT.PerformanceCalculator(score, beatmap, input.Gamemode).Calculate();
-            //else
-                pp = new PerformanceCalculator(score, beatmap, input.Gamemode).Calculate();
 
             if (score.Rank.Equals("F") || beatmap.Approved == 4)
                 achievedPp = $"~~{Math.Round(score.PP > 0 && !input.IsDeltaT ? score.PP : pp.AchievedPp)}pp~~";
@@ -167,13 +162,8 @@ namespace Mitty.Osu
                     int modRequestNumber = OsuHelper.GetModRequestNumber(score.EnabledMods);
                     BeatmapData beatmap = OsuApi.Beatmap(score.BeatmapId, modRequestNumber, input.Gamemode).Result[0];
 
-                    ppData pp;
+                    ppData pp = new PerformanceCalculator(score, beatmap, input.Gamemode).Calculate();
                     string achievedPp;
-
-                    //if (input.IsDeltaT && input.Gamemode == 0)
-                    //    pp = new Calculators.DeltaT.PerformanceCalculator(score, beatmap, input.Gamemode).Calculate();
-                    //else
-                        pp = new PerformanceCalculator(score, beatmap, input.Gamemode).Calculate();
 
                     if (score.Rank.Equals("F") || beatmap.Approved == 4)
                         achievedPp = $"~~{Math.Round(score.PP > 0 && !input.IsDeltaT ? score.PP : pp.AchievedPp)}pp~~";

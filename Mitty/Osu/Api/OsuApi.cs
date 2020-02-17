@@ -34,6 +34,9 @@ namespace Mitty.Osu.Api
 
             ScoreData[] scores = JsonConvert.DeserializeObject<ScoreData[]>(html, settings);
 
+            if (scores.Length == 0)
+                throw new Exception("No recent score found.");
+
             if (input.IsPassOnly)
                 return Array.FindAll(scores, score => score.Rank != "F");
             else
@@ -46,6 +49,9 @@ namespace Mitty.Osu.Api
             string html = await Mitty.Api.Call(url);
 
             ScoreData[] scores = JsonConvert.DeserializeObject<ScoreData[]>(html, settings);
+
+            if (scores.Length == 0)
+                throw new Exception("No score found.");
 
             if (input.IsRecentSorting)
                 return scores.OrderByDescending(x => x.Date).ToArray();
@@ -66,7 +72,12 @@ namespace Mitty.Osu.Api
                 limitParameter + "100";
             string html = await Mitty.Api.Call(url);
 
-            return JsonConvert.DeserializeObject<ScoreData[]>(html, settings);
+            ScoreData[] scores = JsonConvert.DeserializeObject<ScoreData[]>(html, settings);
+
+            if (scores.Length == 0)
+                throw new Exception("No score found.");
+
+            return scores;
         }
 
         public static async Task<ScoreData[]> Score(Input input)
@@ -93,6 +104,9 @@ namespace Mitty.Osu.Api
             string html = await Mitty.Api.Call(url);
 
             ScoreData[] scores = JsonConvert.DeserializeObject<ScoreData[]>(html, settings);
+
+            if (scores.Length == 0)
+                throw new Exception("No score found.");
 
             if (input.IsRecentSorting)
                 return scores.OrderByDescending(x => x.Date).ToArray();
@@ -129,6 +143,7 @@ namespace Mitty.Osu.Api
             string html = await Mitty.Api.Call(url);
 
             UserData[] userData = JsonConvert.DeserializeObject<UserData[]>(html, settings);
+
             if (userData.Length == 0)
                 throw new Exception("User not found");
 
@@ -146,6 +161,7 @@ namespace Mitty.Osu.Api
             string html = await Mitty.Api.Call(url);
 
             UserData[] userData = JsonConvert.DeserializeObject<UserData[]>(html, settings);
+
             if (userData.Length == 0)
                 throw new Exception("User not found");
 
@@ -163,6 +179,7 @@ namespace Mitty.Osu.Api
             string html = await Mitty.Api.Call(url);
 
             UserData[] userData = JsonConvert.DeserializeObject<UserData[]>(html, settings);
+
             if (userData.Length == 0)
                 throw new Exception("User not found");
 
@@ -182,6 +199,7 @@ namespace Mitty.Osu.Api
             string html = await Mitty.Api.Call(url);
 
             BeatmapData[] beatmapData = JsonConvert.DeserializeObject<BeatmapData[]>(html, settings);
+
             if (beatmapData.Length == 0)
                 throw new Exception("Beatmap not found");
 

@@ -15,6 +15,7 @@
     <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00657" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00657" />
     <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00657" />
+    <PackageReference Include="DSharpPlus.Lavalink" Version="4.0.0-nightly-00657" />
     <PackageReference Include="DSharpPlus.VoiceNext" Version="4.0.0-nightly-00657" />
     <PackageReference Include="MySqlConnector" Version="0.62.0-beta7" />
     <PackageReference Include="ScottPlot" Version="4.0.18" />

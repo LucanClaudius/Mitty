@@ -8,11 +8,21 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.VoiceNext;
+using DSharpPlus.Lavalink;
+using DSharpPlus.Net;
 
 namespace Mitty.Commands
 {
+    [ModuleLifespan(ModuleLifespan.Transient)]
     class VoiceCommands : BaseCommandModule
     {
+        private readonly LavalinkConfiguration lavaConfig = new LavalinkConfiguration
+        {
+            Password = Bot.configJson["LavaPass"],
+            RestEndpoint = new ConnectionEndpoint { Hostname = Bot.configJson["LavaHost"], Port = 2333 },
+            SocketEndpoint = new ConnectionEndpoint { Hostname = Bot.configJson["LavaHost"], Port = 80 }
+        };
+
         [Command("join")]
         public async Task Join(CommandContext ctx)
         {
@@ -41,29 +51,26 @@ namespace Mitty.Commands
             vnc.Disconnect();
         }
 
+        //[Command("Play")]
+        //public async Task Leave(CommandContext ctx, Uri uri)
+        //{
+        //    var vnext = ctx.Client.GetVoiceNext();
+        //    var lava = ctx.Client.GetLavalink();
+        //    var nodeConnection = await lava.ConnectAsync(lavaConfig);
+
+        //    var chn = ctx.Member?.VoiceState?.Channel;
+        //    if (chn == null)
+        //        throw new Exception("You are not in a voice channel");
+
+        //    var guildConnection = nodeConnection.ConnectAsync(chn);
+
+        //    var tracks = guildConnection;
+        //}
+
         [Command("derankers")]
         public async Task Derankers(CommandContext ctx)
         {
             await SendFile(ctx, "Sounds/derankers.mp3");
-        }
-
-        [Command("papa")]
-        [Aliases("jekelmissed")]
-        public async Task Papa(CommandContext ctx)
-        {
-            await SendFile(ctx, "Sounds/papa.mp3");
-        }
-
-        [Command("swerrorage")]
-        public async Task SwerroRage(CommandContext ctx)
-        {
-            await SendFile(ctx, "Sounds/nwords.mp3");
-        }
-
-        [Command("nwords")]
-        public async Task NWords(CommandContext ctx)
-        {
-            await SendFile(ctx, "Sounds/nwords.mp3");
         }
 
         private async Task SendFile(CommandContext ctx, string filename)
@@ -88,17 +95,18 @@ namespace Mitty.Commands
                 await vnc.WaitForPlaybackFinishAsync();
 
             Exception exc = null;
-
+            
             try
             {
-                vnc.SendSpeaking(true);
+                vnc.SendSpeaking();
 
                 var psi = new ProcessStartInfo
                 {
                     FileName = "/usr/bin/ffmpeg",
                     Arguments = $@"-i ""{filename}"" -ac 2 -f s16le -ar 48000 pipe:1",
+                    UseShellExecute = false,
                     RedirectStandardOutput = true,
-                    UseShellExecute = false
+                    RedirectStandardError = true
                 };
                 var ffmpeg = Process.Start(psi);
                 var ffout = ffmpeg.StandardOutput.BaseStream;
