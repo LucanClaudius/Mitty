@@ -16,40 +16,40 @@ namespace Mitty.Commands
     [ModuleLifespan(ModuleLifespan.Transient)]
     class VoiceCommands : BaseCommandModule
     {
-        private readonly LavalinkConfiguration lavaConfig = new LavalinkConfiguration
-        {
-            Password = Bot.configJson["LavaPass"],
-            RestEndpoint = new ConnectionEndpoint { Hostname = Bot.configJson["LavaHost"], Port = 2333 },
-            SocketEndpoint = new ConnectionEndpoint { Hostname = Bot.configJson["LavaHost"], Port = 80 }
-        };
+        //private readonly LavalinkConfiguration lavaConfig = new LavalinkConfiguration
+        //{
+        //    Password = Bot.configJson["LavaPass"],
+        //    RestEndpoint = new ConnectionEndpoint { Hostname = Bot.configJson["LavaHost"], Port = 2333 },
+        //    SocketEndpoint = new ConnectionEndpoint { Hostname = Bot.configJson["LavaHost"], Port = 80 }
+        //};
 
-        [Command("join")]
-        public async Task Join(CommandContext ctx)
-        {
-            var vnext = ctx.Client.GetVoiceNext();
+        //[Command("join")]
+        //public async Task Join(CommandContext ctx)
+        //{
+        //    var vnext = ctx.Client.GetVoiceNext();
 
-            var vnc = vnext.GetConnection(ctx.Guild);
-            if (vnc != null)
-                throw new Exception("Already connected to this guild");
+        //    var vnc = vnext.GetConnection(ctx.Guild);
+        //    if (vnc != null)
+        //        throw new Exception("Already connected to this guild");
 
-            var chn = ctx.Member?.VoiceState?.Channel;
-            if (chn == null)
-                throw new Exception("You are not in a voice channel");
+        //    var chn = ctx.Member?.VoiceState?.Channel;
+        //    if (chn == null)
+        //        throw new Exception("You are not in a voice channel");
 
-            vnc = await vnext.ConnectAsync(chn);
-        }
+        //    vnc = await vnext.ConnectAsync(chn);
+        //}
 
-        [Command("leave")]
-        public async Task Leave(CommandContext ctx)
-        {
-            var vnext = ctx.Client.GetVoiceNext();
+        //[Command("leave")]
+        //public async Task Leave(CommandContext ctx)
+        //{
+        //    var vnext = ctx.Client.GetVoiceNext();
 
-            var vnc = vnext.GetConnection(ctx.Guild);
-            if (vnc == null)
-                throw new Exception("Not connected to this guild.");
+        //    var vnc = vnext.GetConnection(ctx.Guild);
+        //    if (vnc == null)
+        //        throw new Exception("Not connected to this guild.");
 
-            vnc.Disconnect();
-        }
+        //    vnc.Disconnect();
+        //}
 
         //[Command("Play")]
         //public async Task Leave(CommandContext ctx, Uri uri)
