@@ -77,7 +77,7 @@ namespace Mitty.Commands
             ctx.TriggerTypingAsync();
             var input = new Input(ctx.Message);
 
-            BeatmapData[] beatmapData = await OsuApi.Beatmap(input.BeatmapId, input.ModRequestNumber ?? 0, input.Gamemode);
+            BeatmapData[] beatmapData = await OsuApi.Beatmap(input.BeatmapId ?? input.Page.ToString(), input.ModRequestNumber ?? 0, input.Gamemode);
 
             if (beatmapData.Length == 0)
                 throw new Exception("Beatmap not found");
@@ -104,6 +104,9 @@ namespace Mitty.Commands
         [Command("osu")]
         public async Task Osu(CommandContext ctx)
         {
+            if (ctx.Message.MentionedUsers.Count <= 0)
+                throw new Exception("No user mentioned");
+
             string id = await Database.GetOsuUser(ctx.Message.MentionedUsers[0].Id);
             if (string.IsNullOrEmpty(id))
                 throw new Exception($"{ctx.Message.MentionedUsers[0].Username} is not linked to an osu account");
@@ -121,7 +124,7 @@ namespace Mitty.Commands
             await ctx.Channel.SendMessageAsync(embed: matchCost.CreateEmbed("All"));
         }
 
-        [Command("teamcsots")]
+        [Command("teamcosts")]
         [Aliases("tc")]
         public async Task TeamCosts(CommandContext ctx, string matchLink, int warmupCount)
         {

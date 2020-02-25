@@ -70,6 +70,7 @@ namespace Mitty.Commands
         [Command("derankers")]
         public async Task Derankers(CommandContext ctx)
         {
+            await ctx.Message.DeleteAsync();
             await SendFile(ctx, "Sounds/derankers.mp3");
         }
 

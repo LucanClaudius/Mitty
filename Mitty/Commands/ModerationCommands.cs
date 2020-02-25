@@ -32,6 +32,7 @@ namespace Mitty.Commands
         [RequirePermissions(Permissions.ManageMessages)]
         public async Task Purge(CommandContext ctx, int amount)
         {
+            await ctx.Message.DeleteAsync();
             IReadOnlyList<DiscordMessage> messages = await ctx.Channel.GetMessagesAsync(amount);
             await ctx.Channel.DeleteMessagesAsync(messages);
         }

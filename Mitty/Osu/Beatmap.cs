@@ -10,9 +10,6 @@ namespace Mitty.Osu
 {
     class Beatmap
     {
-        private const int graphWidth = 720;
-        private const int graphHeight = 200;
-
         private ScoreData[] leaderboard;
         private BeatmapData beatmap;
         private DifficultyCalculator difficultyCalculator;

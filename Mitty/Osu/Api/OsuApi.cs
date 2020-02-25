@@ -83,7 +83,7 @@ namespace Mitty.Osu.Api
         public static async Task<ScoreData[]> Score(Input input)
         {
             if (string.IsNullOrEmpty(input.BeatmapId))
-                throw new Exception("No beatmap Id provided");
+                throw new Exception("No beatmap ID provided");
 
             string _modsParameter = "";
 

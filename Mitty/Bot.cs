@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using DSharpPlus.VoiceNext;
 using System.Linq;
 using DSharpPlus.Entities;
+using DSharpPlus.CommandsNext.Exceptions;
 
 namespace Mitty
 {
@@ -43,7 +44,6 @@ namespace Mitty
             Client = new DiscordClient(config);
             Client.Ready += OnClientReady;
             Client.MessageDeleted += MessageLogger;
-            Client.MessageUpdated += MessageLogger;
 
             Client.UseInteractivity(new InteractivityConfiguration { });
 
@@ -81,35 +81,24 @@ namespace Mitty
 
         private Task OnCommandError(CommandErrorEventArgs e)
         {
-            e.Context.Channel.SendMessageAsync(e.Exception.Message);
+            if (!(e.Exception! is CommandNotFoundException))
+                e.Context.Channel.SendMessageAsync(e.Exception.Message);
+            
             return Task.CompletedTask;
         }
 
-        private Task MessageLogger(MessageDeleteEventArgs e)
+        private async Task MessageLogger(MessageDeleteEventArgs e)
         {
-            var chn = e.Guild.Channels[e.Guild.Channels.FirstOrDefault(x => x.Value.Name == "message-log").Key];
+            var channelId = e.Guild.Channels.FirstOrDefault(x => x.Value.Name == "message-log").Key;
 
-            if (chn != null)
+            if (channelId != 0)
             {
+                var channel = e.Guild.Channels[channelId];
                 var embed = CreateLogEmbed(e.Message).Result;
                 embed.WithDescription($"🗑 **Message deleted in {e.Message.Channel.Mention}**");
+                
+                await channel.SendMessageAsync(embed: embed);
             }
-
-            return Task.CompletedTask;
-        }
-
-        private Task MessageLogger(MessageUpdateEventArgs e)
-        {
-            var chn = e.Guild.Channels[e.Guild.Channels.FirstOrDefault(x => x.Value.Name == "message-log").Key];
-
-            if (chn != null)
-            {
-                var embed = CreateLogEmbed(e.Message).Result;
-                embed.WithDescription($"🗑 **Message edited in {e.Message.Channel.Mention}**");
-                embed.AddField("New message:", $"{e.Message.JumpLink}");
-            }
-
-            return Task.CompletedTask;
         }
 
         private Task<DiscordEmbedBuilder> CreateLogEmbed(DiscordMessage message)
